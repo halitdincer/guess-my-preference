@@ -15,4 +15,9 @@ app.use(express.static("build"));
 
 io.on('connection', (socket) => {
     console.log('a user connected');
+
+    // receive a message from the client
+    socket.on( "howdy", (arg) => {
+        console.log(arg); // prints "stranger"
+    });
 });
