@@ -1,7 +1,8 @@
 import React from "react";
 
 export default function Welcome({nextScreen, changeNickname}) {
-  return (
+  
+    return (
         <>
             <h2>Nickname:</h2>
             <input type="text" name="nickname" id="nickname" />
@@ -10,5 +11,5 @@ export default function Welcome({nextScreen, changeNickname}) {
                 nextScreen()
             }}>Submit</button>
         </>
-  );
+    );
 }

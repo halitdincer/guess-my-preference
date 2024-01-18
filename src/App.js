@@ -3,6 +3,11 @@ import Welcome from "./components/Welcome";
 import Lobby from "./components/Lobby";
 import RoundPlay from "./components/RoundPlay";
 import RoundResult from "./components/RoundResult";
+import { io } from "socket.io-client";
+
+//const URL = process.env.NODE_ENV === 'production' ? undefined : 'http://localhost:3000';
+const URL = 'http://localhost:3000'
+export const socket = io(URL);
 
 function App() {
   const [screen, setScreen] = useState(0);
@@ -10,7 +15,11 @@ function App() {
   let content = 0
 
   useEffect(() => {
-    // Socket 
+
+    socket.on("connect", () => {
+        console.log(socket.connected);
+    });
+
   }, []);
 
   if(screen == 0){
