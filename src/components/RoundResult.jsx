@@ -1,10 +1,12 @@
 import React from "react";
 
-export default function RoundResult({setScreen}) {
+export default function RoundResult({putVote}) {
   return (
         <div>
             <p>Round Result</p>
-            <button onClick={e => {setScreen(2)}}>Submit</button>
+            <button onClick={e => {
+                putVote(1)
+            }}>I'm Ready</button>
         </div>
   );
 }

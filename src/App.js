@@ -14,21 +14,57 @@ socket.on("connect", () => {
 
 function App() {
   const [screen, setScreen] = useState(0);
-  const [nickname, setNickname] = useState(0);
+  const [username, setUsername] = useState('');
+  const [room, setRoom] = useState('');
+  const [users, setUsers] = useState([]);
   let content = 0
 
+  // Change Username
+  function changeUsername(username){
+    socket.emit ("set username", username, (response) => {
+      setUsername(username);
+    });
+  }
+
+  // Join Room
+  function joinRoom(roomID){
+    socket.emit ("join room", roomID, (response) => {
+      setRoom(roomID);
+      setUsers(response.userlist);
+      setScreen(1);
+    }); 
+  }
+
+  // Put Vote
+  function putVote(content){
+    socket.emit ("vote", content);
+  }
+
+  // Effects
   useEffect(() => {
+    socket.on("update users", (users) => {
+      setUsers(users);
+    });
 
-  }, []);
+    socket.on("set screen", (screen) => {
+      setScreen(screen);
+    });
 
-  if(screen == 0){
-    content = <Welcome changeNickname={(nickname) => setNickname(nickname)} nextScreen={() => setScreen(1)} />
-  }else if(screen == 1){
-    content = <Lobby nickname={nickname} nextScreen={() => setScreen(2)} />
-  }else if(screen == 2){
-    content = <RoundPlay nextScreen={() => setScreen(3)} />
-  }else{
-    content = <RoundResult setScreen={(screen) => setScreen(screen)}/>
+  }, [users, screen]);
+
+  // Choosing conten
+  switch(screen) {
+    case 1:
+      content = <Lobby username={username} users={users} room={room} putVote={(content) => putVote(content)} />;
+      break;
+    case 2:
+      content = <RoundPlay putVote={(content) => putVote(content)} />;
+      break;
+    case 3:
+      content = <RoundResult putVote={(content) => putVote(content)} />;
+      break;
+    default:
+      content = <Welcome changeUsername={(username) => changeUsername(username)} joinRoom={(roomID) => joinRoom(roomID)} />;
   }
 
   return (

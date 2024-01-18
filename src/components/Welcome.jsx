@@ -2,19 +2,19 @@ import React from "react";
 import { io } from "socket.io-client";
 import {socket} from "../App";
 
-export default function Welcome({nextScreen, changeNickname}) {
+export default function Welcome({changeUsername, joinRoom}) {
 
-    // send a message to the server
-    socket.emit ("howdy", "stranger");  
-  
     return (
         <>
-            <h2>Nickname:</h2>
-            <input type="text" name="nickname" id="nickname" />
+            <input type="text" name="username" id="username" placeholder="Write your username here..." />
             <button onClick={e => {
-                changeNickname(document.getElementById("nickname").value)
-                nextScreen()
-            }}>Submit</button>
+                changeUsername(document.getElementById("username").value)
+            }}>Set Username</button>
+
+            <input type="text" name="roomId" id="roomID" placeholder="Write your room ID here..." />
+            <button onClick={e => {
+                joinRoom(document.getElementById("roomID").value)
+            }}>Join Room</button>
         </>
     );
 }
