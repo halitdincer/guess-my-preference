@@ -1,5 +1,8 @@
 const { Server } = require('socket.io');
 const express = require("express");
+const fs = require('fs');
+const path = require('path');
+
 
 const app = express();
 const PORT = process.env.PORT || 8080;
@@ -12,6 +15,24 @@ const io = new Server(3000, {
             'http://127.0.0.1:8080'
         ]
     } 
+});
+let questions = [];
+
+function loadCSV(filePath) {
+    return new Promise((resolve, reject) => {
+        fs.readFile(path.resolve(filePath), 'utf8', (err, data) => {
+            if (err) {
+                reject(err);
+                return;
+            }
+            const rows = data.split('\n').map(row => row.split(','));
+            resolve(rows);
+        });
+    });
+}
+
+loadCSV('questions.csv').then(data => {
+    questions = data;
 });
 
 app.listen(PORT, () => console.log("Server started"));
@@ -45,7 +66,8 @@ io.on('connection', (socket) => {
         // Prepare list of all users in a room
         let users = Array.from(room).map(socketId => {
             let username = io.sockets.sockets.get(socketId).username;
-            return { socketId: socketId, username: username };
+            let vote = io.sockets.sockets.get(socketId).vote;
+            return { socketId: socketId, username: username, vote: vote };
         });
 
         // Tell other users in the room that new user joined
@@ -71,12 +93,27 @@ io.on('connection', (socket) => {
 
         if(everyoneVote){
             room.stat = room.stat == 3 ? 2 : (room.stat + 1) ;
+
+            if(room.stat==2){
+                io.in(roomID).emit('update question',questions[Math.floor(Math.random() * questions.length)]);
+            }else if(room.stat==3){
+                //io.in(roomID).emit('update scoreboard',calculateScoreboard());
+            }
+
             io.in(roomID).emit('set screen',room.stat);
 
             room.forEach(socketId => {
                 io.sockets.sockets.get(socketId).vote = 0;
             });
         }
+
+        // Prepare list of all users in a room
+        let users = Array.from(room).map(socketId => {
+            let username = io.sockets.sockets.get(socketId).username;
+            let vote = io.sockets.sockets.get(socketId).vote;
+            return { socketId: socketId, username: username, vote: vote };
+        });
+        io.in(roomID).emit('update users',users);
 
     });
 

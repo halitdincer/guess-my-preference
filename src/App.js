@@ -16,6 +16,7 @@ function App() {
   const [screen, setScreen] = useState(0);
   const [username, setUsername] = useState('');
   const [room, setRoom] = useState('');
+  const [question, setQuestion] = useState(['question1','op1','op2','op3','op4']);
   const [users, setUsers] = useState([]);
   let content = 0
 
@@ -50,7 +51,11 @@ function App() {
       setScreen(screen);
     });
 
-  }, [users, screen]);
+    socket.on("update question", (question) => {
+      setQuestion(question);
+    });
+
+  }, [users, screen, question]);
 
   // Choosing conten
   switch(screen) {
@@ -58,10 +63,10 @@ function App() {
       content = <Lobby username={username} users={users} room={room} putVote={(content) => putVote(content)} />;
       break;
     case 2:
-      content = <RoundPlay putVote={(content) => putVote(content)} />;
+      content = <RoundPlay users={users} question={question} putVote={(content) => putVote(content)} />;
       break;
     case 3:
-      content = <RoundResult putVote={(content) => putVote(content)} />;
+      content = <RoundResult users={users} putVote={(content) => putVote(content)} />;
       break;
     default:
       content = <Welcome changeUsername={(username) => changeUsername(username)} joinRoom={(roomID) => joinRoom(roomID)} />;
