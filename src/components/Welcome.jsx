@@ -1,6 +1,4 @@
 import React from "react";
-import { io } from "socket.io-client";
-import {socket} from "../App";
 
 export default function Welcome({changeUsername, joinRoom}) {
 
