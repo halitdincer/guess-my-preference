@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
-import Welcome from "./components/Welcome";
-import Lobby from "./components/Lobby";
-import RoundPlay from "./components/RoundPlay";
-import RoundResult from "./components/RoundResult";
+import WelcomeScreen from "./components/WelcomeScreen";
+import LobbyScreen from "./components/LobbyScreen";
+import GameScreen from "./components/GameScreen";
+import ResultScreen from "./components/ResultScreen";
 import { io } from "socket.io-client";
+import './App.css';
 
 //const URL = process.env.NODE_ENV === 'production' ? undefined : 'http://localhost:3000';
 const URL = 'http://localhost:3000'
@@ -60,16 +61,16 @@ function App() {
   // Choosing conten
   switch(screen) {
     case 1:
-      content = <Lobby username={username} users={users} room={room} putVote={(content) => putVote(content)} />;
+      content = <LobbyScreen username={username} users={users} room={room} putVote={(content) => putVote(content)} />;
       break;
     case 2:
-      content = <RoundPlay users={users} question={question} putVote={(content) => putVote(content)} />;
+      content = <GameScreen users={users} question={question} putVote={(content) => putVote(content)} />;
       break;
     case 3:
-      content = <RoundResult users={users} putVote={(content) => putVote(content)} />;
+      content = <ResultScreen users={users} putVote={(content) => putVote(content)} />;
       break;
     default:
-      content = <Welcome changeUsername={(username) => changeUsername(username)} joinRoom={(roomID) => joinRoom(roomID)} />;
+      content = <WelcomeScreen changeUsername={(username) => changeUsername(username)} joinRoom={(roomID) => joinRoom(roomID)} />;
   }
 
   return (

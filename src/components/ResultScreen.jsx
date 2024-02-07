@@ -1,15 +1,13 @@
 import React from "react";
 
-export default function Lobby({username, users, room, putVote}) {
+export default function ResultScreen({putVote, users}) {
   return (
-        <div>
-            <h1>Room: {room}</h1>
-            <p>Welcome, {username}</p>
+        <section className="screen">
+            <p>Round Result</p>
             <p>Users: {JSON.stringify(users)}</p>
-
             <button onClick={e => {
                 putVote(1)
             }}>I'm Ready</button>
-        </div>
+        </section>
   );
 }
